@@ -5,7 +5,7 @@ import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/constants/app_constants.dart';
-import '../../../../core/router/app_routes.dart';
+import '../../../../core/router/app_router.dart';
 import '../../../auth/presentation/controllers/auth_controller.dart';
 
 class SplashView extends StatefulWidget {
@@ -49,7 +49,6 @@ class _SplashViewState extends State<SplashView> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            // Logo Container Card
             Container(
               width: 96,
               height: 96,
@@ -74,10 +73,8 @@ class _SplashViewState extends State<SplashView> {
                 .scale(duration: 600.ms, curve: Curves.easeOutBack)
                 .fadeIn(duration: 400.ms),
             const Gap(24),
-
-            // App Name
             Text(
-              'MMS CRM',
+              AppConstants.appName,
               style: GoogleFonts.plusJakartaSans(
                 fontSize: 26,
                 fontWeight: FontWeight.w800,
@@ -89,10 +86,8 @@ class _SplashViewState extends State<SplashView> {
                 .fadeIn(delay: 200.ms, duration: 500.ms)
                 .slideY(begin: 0.2, end: 0),
             const Gap(6),
-
-            // App Subtitle
             Text(
-              'PT Marga Mulya Mobile System',
+              'Exsense Mobile System',
               style: GoogleFonts.plusJakartaSans(
                 fontSize: 14,
                 fontWeight: FontWeight.w400,
@@ -101,8 +96,6 @@ class _SplashViewState extends State<SplashView> {
               ),
             ).animate().fadeIn(delay: 350.ms, duration: 500.ms),
             const Gap(48),
-
-            // Loading Indicator
             const SizedBox(
               width: 24,
               height: 24,

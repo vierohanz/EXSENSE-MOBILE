@@ -1,6 +1,6 @@
 import 'package:get/get.dart';
 import '../network/api_client.dart';
-import '../router/app_routes.dart';
+import '../router/app_router.dart';
 import '../services/storage_service.dart';
 import '../../features/auth/data/datasources/auth_local_data_source.dart';
 import '../../features/auth/data/datasources/auth_remote_data_source.dart';

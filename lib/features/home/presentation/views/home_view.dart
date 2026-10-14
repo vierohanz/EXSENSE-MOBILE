@@ -4,7 +4,7 @@ import 'package:gap/gap.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../../../core/constants/app_colors.dart';
-import '../../../../core/router/app_routes.dart';
+import '../../../../core/router/app_router.dart';
 import '../../../../core/utils/helpers.dart';
 import '../../../auth/domain/entities/user_entity.dart';
 import '../../../auth/presentation/controllers/auth_controller.dart';

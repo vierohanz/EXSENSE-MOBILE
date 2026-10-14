@@ -5,8 +5,8 @@ import 'core/constants/app_constants.dart';
 import 'core/router/app_router.dart';
 import 'core/theme/app_theme.dart';
 
-class MargaMulyaApp extends StatelessWidget {
-  const MargaMulyaApp({super.key});
+class ExsenseApp extends StatelessWidget {
+  const ExsenseApp({super.key});
 
   @override
   Widget build(BuildContext context) {

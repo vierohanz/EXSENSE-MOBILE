@@ -18,8 +18,10 @@ class ApiClient {
         Dio(
           BaseOptions(
             baseUrl: baseUrl ?? AppConstants.defaultBaseUrl,
-            connectTimeout: const Duration(milliseconds: AppConstants.connectTimeout),
-            receiveTimeout: const Duration(milliseconds: AppConstants.receiveTimeout),
+            connectTimeout:
+                const Duration(milliseconds: AppConstants.connectTimeout),
+            receiveTimeout:
+                const Duration(milliseconds: AppConstants.receiveTimeout),
             headers: {'Content-Type': 'application/json'},
           ),
         );
@@ -118,11 +120,11 @@ class ApiClient {
       case DioExceptionType.sendTimeout:
       case DioExceptionType.receiveTimeout:
       case DioExceptionType.connectionError:
-        return NetworkException('Koneksi internet bermasalah, silakan coba lagi');
+        return NetworkException('Connection error, please try again');
       case DioExceptionType.badResponse:
         final statusCode = error.response?.statusCode;
         final responseData = error.response?.data;
-        String message = 'Terjadi kesalahan pada server';
+        String message = 'Something went wrong';
         if (responseData is Map<String, dynamic>) {
           message = responseData['message'] ?? responseData['error'] ?? message;
         }
@@ -131,9 +133,9 @@ class ApiClient {
         }
         return ServerException(message, statusCode);
       case DioExceptionType.cancel:
-        return ServerException('Permintaan dibatalkan');
+        return ServerException('Request was cancelled');
       default:
-        return ServerException('Terjadi kesalahan yang tidak terduga');
+        return ServerException('Something went wrong');
     }
   }
 }

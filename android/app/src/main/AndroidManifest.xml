@@ -2,7 +2,7 @@
     <uses-permission android:name="android.permission.INTERNET"/>
 
     <application
-        android:label="MMS CRM"
+        android:label="Exsense"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher"
         android:usesCleartextTraffic="true">
