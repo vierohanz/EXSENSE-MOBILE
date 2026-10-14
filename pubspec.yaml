@@ -1,5 +1,5 @@
 name: boilerplate_flutter
-description: "Application with Clean Architecture, Riverpod, and GoRouter"
+description: "Application with Clean Architecture, GetX, and Hive"
 publish_to: "none"
 
 version: 1.0.0+1
@@ -13,7 +13,6 @@ dependencies:
   dio: ^5.8.0+1
   logger: ^2.5.0
   connectivity_plus: ^6.1.3
-  shared_preferences: ^2.3.5
   fpdart: ^1.1.1
   equatable: ^2.0.7
   intl: ^0.20.2
@@ -21,14 +20,14 @@ dependencies:
   flutter_svg: ^2.3.0
   cached_network_image: ^3.4.1
   cupertino_icons: ^1.0.8
-  flutter_riverpod: ^3.4.3
-  go_router: ^18.0.1
   gap: ^3.0.1
   path_provider: ^2.1.6
   uuid: ^4.6.0
   flutter_animate: ^4.5.2
   flutter_dotenv: ^6.0.1
-  flutter_secure_storage: 9.2.4
+  get: ^4.7.3
+  hive: ^2.2.3
+  hive_flutter: ^1.1.0
 
 dev_dependencies:
   flutter_test:

@@ -1,22 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
-import 'package:go_router/go_router.dart';
+import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/constants/app_constants.dart';
 import '../../../../core/router/app_routes.dart';
-import '../../../auth/presentation/providers/auth_providers.dart';
+import '../../../auth/presentation/controllers/auth_controller.dart';
 
-class SplashView extends ConsumerStatefulWidget {
+class SplashView extends StatefulWidget {
   const SplashView({super.key});
 
   @override
-  ConsumerState<SplashView> createState() => _SplashViewState();
+  State<SplashView> createState() => _SplashViewState();
 }
 
-class _SplashViewState extends ConsumerState<SplashView> {
+class _SplashViewState extends State<SplashView> {
   @override
   void initState() {
     super.initState();
@@ -26,8 +25,9 @@ class _SplashViewState extends ConsumerState<SplashView> {
   }
 
   Future<void> _handleSplashNavigation() async {
+    final authController = Get.find<AuthController>();
     final minDelay = Future.delayed(AppConstants.splashDuration);
-    final authCheck = ref.read(authNotifierProvider.notifier).checkAuthStatus();
+    final authCheck = authController.checkAuthStatus();
 
     final results = await Future.wait([authCheck, minDelay]);
     final isAuthenticated = results[0] as bool;
@@ -35,9 +35,9 @@ class _SplashViewState extends ConsumerState<SplashView> {
     if (!mounted) return;
 
     if (isAuthenticated) {
-      context.go(Routes.home);
+      Get.offAllNamed(Routes.home);
     } else {
-      context.go(Routes.login);
+      Get.offAllNamed(Routes.login);
     }
   }
 

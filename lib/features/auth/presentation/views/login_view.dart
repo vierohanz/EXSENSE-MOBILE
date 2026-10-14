@@ -1,23 +1,22 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
-import 'package:go_router/go_router.dart';
+import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/router/app_routes.dart';
 import '../../../../core/utils/helpers.dart';
-import '../providers/auth_providers.dart';
+import '../controllers/auth_controller.dart';
 
-class LoginView extends ConsumerStatefulWidget {
+class LoginView extends StatefulWidget {
   const LoginView({super.key});
 
   @override
-  ConsumerState<LoginView> createState() => _LoginViewState();
+  State<LoginView> createState() => _LoginViewState();
 }
 
-class _LoginViewState extends ConsumerState<LoginView> {
+class _LoginViewState extends State<LoginView> {
   final _formKey = GlobalKey<FormState>();
   late final TextEditingController _emailController;
   late final TextEditingController _passwordController;
@@ -53,19 +52,20 @@ class _LoginViewState extends ConsumerState<LoginView> {
   Future<void> _handleLogin() async {
     if (!_formKey.currentState!.validate()) return;
 
-    final success = await ref.read(authNotifierProvider.notifier).login(
-          email: _emailController.text.trim(),
-          password: _passwordController.text,
-        );
+    final authController = Get.find<AuthController>();
+    final success = await authController.login(
+      email: _emailController.text.trim(),
+      password: _passwordController.text,
+    );
 
     if (success && mounted) {
-      context.go(Routes.home);
+      Get.offAllNamed(Routes.home);
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    final authState = ref.watch(authNotifierProvider);
+    final authController = Get.find<AuthController>();
 
     return Scaffold(
       backgroundColor: AppColors.background,
@@ -214,80 +214,82 @@ class _LoginViewState extends ConsumerState<LoginView> {
                         ),
                       ),
                       const Gap(6),
-                      TextFormField(
-                        controller: _passwordController,
-                        obscureText: !authState.isPasswordVisible,
-                        textInputAction: TextInputAction.done,
-                        onFieldSubmitted: (_) => _isFormValid ? _handleLogin() : null,
-                        style: GoogleFonts.plusJakartaSans(
-                          fontSize: 14,
-                          color: AppColors.textPrimary,
-                        ),
-                        decoration: InputDecoration(
-                          hintText: '',
-                          contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-                          fillColor: Colors.white,
-                          filled: true,
-                          suffixIcon: IconButton(
-                            icon: Icon(
-                              authState.isPasswordVisible
-                                  ? Icons.visibility_outlined
-                                  : Icons.visibility_off_outlined,
-                              color: const Color(0xFF94A3B8),
-                              size: 20,
+                      Obx(
+                        () => TextFormField(
+                          controller: _passwordController,
+                          obscureText: !authController.isPasswordVisible,
+                          textInputAction: TextInputAction.done,
+                          onFieldSubmitted: (_) => _isFormValid ? _handleLogin() : null,
+                          style: GoogleFonts.plusJakartaSans(
+                            fontSize: 14,
+                            color: AppColors.textPrimary,
+                          ),
+                          decoration: InputDecoration(
+                            hintText: '',
+                            contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                            fillColor: Colors.white,
+                            filled: true,
+                            suffixIcon: IconButton(
+                              icon: Icon(
+                                authController.isPasswordVisible
+                                    ? Icons.visibility_outlined
+                                    : Icons.visibility_off_outlined,
+                                color: const Color(0xFF94A3B8),
+                                size: 20,
+                              ),
+                              onPressed: authController.togglePasswordVisibility,
                             ),
-                            onPressed: () {
-                              ref.read(authNotifierProvider.notifier).togglePasswordVisibility();
-                            },
+                            enabledBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(10),
+                              borderSide: const BorderSide(color: AppColors.border),
+                            ),
+                            focusedBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(10),
+                              borderSide: const BorderSide(color: AppColors.primary, width: 1.5),
+                            ),
                           ),
-                          enabledBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(10),
-                            borderSide: const BorderSide(color: AppColors.border),
-                          ),
-                          focusedBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(10),
-                            borderSide: const BorderSide(color: AppColors.primary, width: 1.5),
-                          ),
+                          validator: (val) {
+                            if (val == null || val.isEmpty) {
+                              return 'Kata sandi wajib diisi';
+                            }
+                            return null;
+                          },
                         ),
-                        validator: (val) {
-                          if (val == null || val.isEmpty) {
-                            return 'Kata sandi wajib diisi';
-                          }
-                          return null;
-                        },
                       ).animate().fadeIn(delay: 200.ms, duration: 350.ms),
                       const Gap(26),
 
                       // Submit Button ("Masuk")
-                      SizedBox(
-                        height: 48,
-                        child: ElevatedButton(
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: _isFormValid ? AppColors.primary : AppColors.buttonDisabled,
-                            foregroundColor: Colors.white,
-                            elevation: 0,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(10),
+                      Obx(
+                        () => SizedBox(
+                          height: 48,
+                          child: ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: _isFormValid ? AppColors.primary : AppColors.buttonDisabled,
+                              foregroundColor: Colors.white,
+                              elevation: 0,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(10),
+                              ),
                             ),
+                            onPressed: (authController.isLoading || !_isFormValid) ? null : _handleLogin,
+                            child: authController.isLoading
+                                ? const SizedBox(
+                                    height: 20,
+                                    width: 20,
+                                    child: CircularProgressIndicator(
+                                      strokeWidth: 2.2,
+                                      valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                                    ),
+                                  )
+                                : Text(
+                                    'Masuk',
+                                    style: GoogleFonts.plusJakartaSans(
+                                      fontSize: 15,
+                                      fontWeight: FontWeight.w600,
+                                      color: Colors.white,
+                                    ),
+                                  ),
                           ),
-                          onPressed: (authState.isLoading || !_isFormValid) ? null : _handleLogin,
-                          child: authState.isLoading
-                              ? const SizedBox(
-                                  height: 20,
-                                  width: 20,
-                                  child: CircularProgressIndicator(
-                                    strokeWidth: 2.2,
-                                    valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
-                                  ),
-                                )
-                              : Text(
-                                  'Masuk',
-                                  style: GoogleFonts.plusJakartaSans(
-                                    fontSize: 15,
-                                    fontWeight: FontWeight.w600,
-                                    color: Colors.white,
-                                  ),
-                                ),
                         ),
                       ).animate().fadeIn(delay: 250.ms, duration: 350.ms),
                       const Gap(28),

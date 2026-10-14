@@ -1,30 +1,29 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
-import 'package:go_router/go_router.dart';
+import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/router/app_routes.dart';
 import '../../../../core/utils/helpers.dart';
 import '../../../auth/domain/entities/user_entity.dart';
-import '../../../auth/presentation/providers/auth_providers.dart';
-import '../providers/home_providers.dart';
+import '../../../auth/presentation/controllers/auth_controller.dart';
+import '../controllers/home_controller.dart';
 
-class HomeView extends ConsumerStatefulWidget {
+class HomeView extends StatefulWidget {
   const HomeView({super.key});
 
   @override
-  ConsumerState<HomeView> createState() => _HomeViewState();
+  State<HomeView> createState() => _HomeViewState();
 }
 
-class _HomeViewState extends ConsumerState<HomeView> {
+class _HomeViewState extends State<HomeView> {
   late final PageController _pageController;
 
   @override
   void initState() {
     super.initState();
-    final initialTab = ref.read(selectedTabProvider);
+    final initialTab = Get.find<HomeController>().selectedTab;
     _pageController = PageController(initialPage: initialTab);
   }
 
@@ -35,7 +34,7 @@ class _HomeViewState extends ConsumerState<HomeView> {
   }
 
   void _onTabSelected(int index) {
-    ref.read(selectedTabProvider.notifier).setTab(index);
+    Get.find<HomeController>().setTab(index);
     _pageController.animateToPage(
       index,
       duration: const Duration(milliseconds: 300),
@@ -50,13 +49,13 @@ class _HomeViewState extends ConsumerState<HomeView> {
     if (!mounted) return;
     AppHelpers.showLoadingDialog('Sedang keluar...');
     try {
-      await ref.read(authNotifierProvider.notifier).logout();
+      await Get.find<AuthController>().logout();
     } finally {
       AppHelpers.hideLoadingDialog();
     }
 
     if (!mounted) return;
-    context.go(Routes.login);
+    Get.offAllNamed(Routes.login);
   }
 
   String _getInitial(String? name) {
@@ -66,11 +65,14 @@ class _HomeViewState extends ConsumerState<HomeView> {
 
   @override
   Widget build(BuildContext context) {
-    final authState = ref.watch(authNotifierProvider);
-    final user = authState.currentUser;
-    final selectedTab = ref.watch(selectedTabProvider);
+    final authController = Get.find<AuthController>();
+    final homeController = Get.find<HomeController>();
 
-    return Scaffold(
+    return Obx(() {
+      final user = authController.currentUser;
+      final selectedTab = homeController.selectedTab;
+
+      return Scaffold(
       backgroundColor: const Color(0xFFFAFAFB),
       appBar: AppBar(
         backgroundColor: Colors.white,
@@ -186,7 +188,7 @@ class _HomeViewState extends ConsumerState<HomeView> {
       body: PageView(
         controller: _pageController,
         onPageChanged: (index) {
-          ref.read(selectedTabProvider.notifier).setTab(index);
+          homeController.setTab(index);
         },
         physics: const BouncingScrollPhysics(),
         children: [
@@ -270,6 +272,7 @@ class _HomeViewState extends ConsumerState<HomeView> {
         ),
       ),
     );
+    });
   }
 
   Widget _buildDashboardTab(UserEntity? user) {

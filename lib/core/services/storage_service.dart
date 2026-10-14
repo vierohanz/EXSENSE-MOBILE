@@ -1,65 +1,74 @@
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 import '../constants/app_constants.dart';
 
 class StorageService {
-  final SharedPreferences _prefs;
-  final FlutterSecureStorage _secureStorage;
+  static const String _boxName = 'app_storage';
+  Box? _box;
   String? _cachedToken;
 
-  StorageService(this._prefs, this._secureStorage);
+  StorageService([Box? box]) : _box = box;
 
-  /// Initializes storage service by preloading token from secure storage
-  /// and migrating any legacy unencrypted token if present.
   Future<void> init() async {
-    _cachedToken = await _secureStorage.read(key: AppConstants.tokenKey);
-
-    // Migration: If legacy token exists in SharedPreferences, move it to FlutterSecureStorage
-    final legacyToken = _prefs.getString(AppConstants.tokenKey);
-    if (legacyToken != null && legacyToken.isNotEmpty) {
-      if (_cachedToken == null || _cachedToken!.isEmpty) {
-        _cachedToken = legacyToken;
-        await _secureStorage.write(key: AppConstants.tokenKey, value: legacyToken);
-      }
-      await _prefs.remove(AppConstants.tokenKey);
+    if (!Hive.isBoxOpen(_boxName)) {
+      _box = await Hive.openBox(_boxName);
+    } else {
+      _box = Hive.box(_boxName);
     }
+    _cachedToken = _box?.get(AppConstants.tokenKey) as String?;
   }
 
-  // Token Management (Hardware-backed encrypted Secure Storage)
-  String? get token => _cachedToken;
+  Box get box {
+    if (_box == null || !_box!.isOpen) {
+      _box = Hive.box(_boxName);
+    }
+    return _box!;
+  }
+
+  String? get token =>
+      _cachedToken ?? box.get(AppConstants.tokenKey) as String?;
 
   Future<String?> getSecureToken() async {
-    _cachedToken = await _secureStorage.read(key: AppConstants.tokenKey);
+    _cachedToken = box.get(AppConstants.tokenKey) as String?;
     return _cachedToken;
   }
 
   Future<void> setToken(String token) async {
     _cachedToken = token;
-    await _secureStorage.write(key: AppConstants.tokenKey, value: token);
+    await box.put(AppConstants.tokenKey, token);
   }
 
   Future<void> removeToken() async {
     _cachedToken = null;
-    await _secureStorage.delete(key: AppConstants.tokenKey);
-    await _prefs.remove(AppConstants.tokenKey);
+    await box.delete(AppConstants.tokenKey);
   }
 
-  bool get hasToken => _cachedToken != null && _cachedToken!.isNotEmpty;
+  bool get hasToken => token != null && token!.isNotEmpty;
 
-  // Generic Storage Helpers (SharedPreferences for general app settings)
-  String? getString(String key) => _prefs.getString(key);
-  Future<bool> setString(String key, String value) => _prefs.setString(key, value);
+  String? getString(String key) => box.get(key) as String?;
+  Future<bool> setString(String key, String value) async {
+    await box.put(key, value);
+    return true;
+  }
 
-  bool? getBool(String key) => _prefs.getBool(key);
-  Future<bool> setBool(String key, bool value) => _prefs.setBool(key, value);
+  bool? getBool(String key) => box.get(key) as bool?;
+  Future<bool> setBool(String key, bool value) async {
+    await box.put(key, value);
+    return true;
+  }
 
-  int? getInt(String key) => _prefs.getInt(key);
-  Future<bool> setInt(String key, int value) => _prefs.setInt(key, value);
+  int? getInt(String key) => box.get(key) as int?;
+  Future<bool> setInt(String key, int value) async {
+    await box.put(key, value);
+    return true;
+  }
 
-  Future<bool> remove(String key) => _prefs.remove(key);
+  Future<bool> remove(String key) async {
+    await box.delete(key);
+    return true;
+  }
+
   Future<void> clear() async {
     _cachedToken = null;
-    await _secureStorage.deleteAll();
-    await _prefs.clear();
+    await box.clear();
   }
 }
