@@ -24,6 +24,32 @@ class AppInputBottomSheet extends StatelessWidget {
     required this.onSubmit,
   });
 
+  static Future<void> show({
+    required BuildContext context,
+    required String title,
+    String? subtitle,
+    required TextEditingController controller,
+    required String hintText,
+    int maxLines = 5,
+    String submitLabel = 'Submit',
+    required ValueChanged<String> onSubmit,
+  }) {
+    return showModalBottomSheet<void>(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (ctx) => AppInputBottomSheet(
+        title: title,
+        subtitle: subtitle,
+        controller: controller,
+        hintText: hintText,
+        maxLines: maxLines,
+        submitLabel: submitLabel,
+        onSubmit: onSubmit,
+      ),
+    );
+  }
+
   void _handleSubmit(BuildContext context) {
     onSubmit(controller.text);
     Navigator.pop(context);

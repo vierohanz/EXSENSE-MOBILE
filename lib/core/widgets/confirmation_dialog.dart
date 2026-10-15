@@ -50,6 +50,41 @@ class AppConfirmationDialog extends StatelessWidget {
     );
   }
 
+  static Future<bool?> show({
+    required BuildContext context,
+    required String title,
+    required String message,
+    String confirmText = 'Confirm',
+    String cancelText = 'Cancel',
+    IconData icon = Icons.help_outline_rounded,
+    Color? iconColor,
+    Color? iconBackgroundColor,
+    bool isDestructive = false,
+  }) {
+    return showDialog<bool>(
+      context: context,
+      builder: (ctx) => AppConfirmationDialog(
+        title: title,
+        message: message,
+        confirmText: confirmText,
+        cancelText: cancelText,
+        icon: icon,
+        iconColor: iconColor,
+        iconBackgroundColor: iconBackgroundColor,
+        isDestructive: isDestructive,
+      ),
+    );
+  }
+
+  static Future<bool?> showLogout({
+    required BuildContext context,
+  }) {
+    return showDialog<bool>(
+      context: context,
+      builder: (ctx) => AppConfirmationDialog.logout(),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final effectiveIconColor =
@@ -68,7 +103,6 @@ class AppConfirmationDialog extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            // Icon Badge
             Container(
               width: 56,
               height: 56,
@@ -83,8 +117,6 @@ class AppConfirmationDialog extends StatelessWidget {
               ),
             ).animate().scale(duration: 350.ms, curve: Curves.easeOutBack),
             const Gap(16),
-
-            // Title
             Text(
               title,
               textAlign: TextAlign.center,
@@ -95,8 +127,6 @@ class AppConfirmationDialog extends StatelessWidget {
               ),
             ),
             const Gap(8),
-
-            // Message
             Text(
               message,
               textAlign: TextAlign.center,
@@ -107,11 +137,8 @@ class AppConfirmationDialog extends StatelessWidget {
               ),
             ),
             const Gap(24),
-
-            // Action Buttons
             Row(
               children: [
-                // Cancel Button
                 Expanded(
                   child: SizedBox(
                     height: 44,
@@ -139,8 +166,6 @@ class AppConfirmationDialog extends StatelessWidget {
                   ),
                 ),
                 const Gap(12),
-
-                // Confirm Button
                 Expanded(
                   child: SizedBox(
                     height: 44,

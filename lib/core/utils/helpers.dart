@@ -3,6 +3,7 @@ import '../theme/app_colors.dart';
 import '../routes/app_pages.dart';
 import '../widgets/confirmation_dialog.dart';
 import '../widgets/input_bottom_sheet.dart';
+export 'formatters.dart';
 
 class AppHelpers {
   AppHelpers._();
@@ -56,88 +57,6 @@ class AppHelpers {
               ),
             ),
           ],
-        ),
-      ),
-    );
-  }
-
-  static void showAuthErrorDialog({
-    BuildContext? context,
-    String title = 'Informasi Akun Tidak Sesuai',
-    String message = 'Pastikan email dan kata sandi Anda sesuai',
-  }) {
-    final ctx = context ?? rootNavigatorKey.currentContext;
-    if (ctx == null) return;
-
-    showDialog(
-      context: ctx,
-      builder: (dialogCtx) => Dialog(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
-        backgroundColor: Colors.white,
-        surfaceTintColor: Colors.white,
-        elevation: 8,
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 24),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Container(
-                width: 52,
-                height: 52,
-                decoration: BoxDecoration(
-                  color: const Color(0xFFFEF2F2),
-                  borderRadius: BorderRadius.circular(14),
-                ),
-                child: const Icon(
-                  Icons.person_off_outlined,
-                  color: Color(0xFFEF4444),
-                  size: 26,
-                ),
-              ),
-              const SizedBox(height: 16),
-              Text(
-                title,
-                textAlign: TextAlign.center,
-                style: const TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
-                  color: AppColors.textPrimary,
-                ),
-              ),
-              const SizedBox(height: 6),
-              Text(
-                message,
-                textAlign: TextAlign.center,
-                style: const TextStyle(
-                  fontSize: 13,
-                  color: AppColors.textSecondary,
-                  height: 1.4,
-                ),
-              ),
-              const SizedBox(height: 20),
-              SizedBox(
-                width: double.infinity,
-                height: 44,
-                child: OutlinedButton(
-                  style: OutlinedButton.styleFrom(
-                    foregroundColor: AppColors.textPrimary,
-                    side: const BorderSide(color: AppColors.border),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                  ),
-                  onPressed: () => Navigator.of(dialogCtx).pop(),
-                  child: const Text(
-                    'Kembali',
-                    style: TextStyle(
-                      fontWeight: FontWeight.w600,
-                      fontSize: 14,
-                    ),
-                  ),
-                ),
-              ),
-            ],
-          ),
         ),
       ),
     );
@@ -200,28 +119,23 @@ class AppHelpers {
     Color? iconBackgroundColor,
     bool isDestructive = false,
   }) {
-    return showDialog<bool>(
+    return AppConfirmationDialog.show(
       context: context,
-      builder: (ctx) => AppConfirmationDialog(
-        title: title,
-        message: message,
-        confirmText: confirmText,
-        cancelText: cancelText,
-        icon: icon,
-        iconColor: iconColor,
-        iconBackgroundColor: iconBackgroundColor,
-        isDestructive: isDestructive,
-      ),
+      title: title,
+      message: message,
+      confirmText: confirmText,
+      cancelText: cancelText,
+      icon: icon,
+      iconColor: iconColor,
+      iconBackgroundColor: iconBackgroundColor,
+      isDestructive: isDestructive,
     );
   }
 
   static Future<bool?> showLogoutConfirmationDialog({
     required BuildContext context,
   }) {
-    return showDialog<bool>(
-      context: context,
-      builder: (ctx) => AppConfirmationDialog.logout(),
-    );
+    return AppConfirmationDialog.showLogout(context: context);
   }
 
   static Future<void> showInputBottomSheet({
@@ -234,19 +148,15 @@ class AppHelpers {
     String submitLabel = 'Submit',
     required ValueChanged<String> onSubmit,
   }) {
-    return showModalBottomSheet<void>(
+    return AppInputBottomSheet.show(
       context: context,
-      isScrollControlled: true,
-      backgroundColor: Colors.transparent,
-      builder: (ctx) => AppInputBottomSheet(
-        title: title,
-        subtitle: subtitle,
-        controller: controller,
-        hintText: hintText,
-        maxLines: maxLines,
-        submitLabel: submitLabel,
-        onSubmit: onSubmit,
-      ),
+      title: title,
+      subtitle: subtitle,
+      controller: controller,
+      hintText: hintText,
+      maxLines: maxLines,
+      submitLabel: submitLabel,
+      onSubmit: onSubmit,
     );
   }
 }

@@ -2,8 +2,8 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/marga_mulya_mobile.iml" filepath="$PROJECT_DIR$/marga_mulya_mobile.iml" />
-      <module fileurl="file://$PROJECT_DIR$/android/marga_mulya_mobile_android.iml" filepath="$PROJECT_DIR$/android/marga_mulya_mobile_android.iml" />
+      <module fileurl="file://$PROJECT_DIR$/exsense.iml" filepath="$PROJECT_DIR$/exsense.iml" />
+      <module fileurl="file://$PROJECT_DIR$/android/exsense_android.iml" filepath="$PROJECT_DIR$/android/exsense_android.iml" />
     </modules>
   </component>
 </project>

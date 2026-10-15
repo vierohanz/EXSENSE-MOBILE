@@ -4,7 +4,7 @@ import 'package:gap/gap.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../../../core/theme/app_colors.dart';
-import '../../../../core/utils/helpers.dart';
+import '../../../../core/widgets/input_bottom_sheet.dart';
 import '../../logic/home_controller.dart';
 import '../widgets/home_bottom_wave.dart';
 
@@ -75,7 +75,7 @@ class HomePage extends GetView<HomeController> {
   }
 
   void _showConnectionSettings(BuildContext context) {
-    AppHelpers.showInputBottomSheet(
+    AppInputBottomSheet.show(
       context: context,
       title: 'Token',
       controller: controller.tokenTextController,
@@ -85,7 +85,7 @@ class HomePage extends GetView<HomeController> {
   }
 
   void _showActivityRemarkDialog(BuildContext context) {
-    AppHelpers.showInputBottomSheet(
+    AppInputBottomSheet.show(
       context: context,
       title: 'Activity Note',
       subtitle:

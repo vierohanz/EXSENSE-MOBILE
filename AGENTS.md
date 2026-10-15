@@ -19,7 +19,7 @@ lib/
 │   ├── network/         # API client, interceptors, endpoints, exceptions
 │   ├── routes/          # Navigation routes and GetPage route definitions
 │   ├── theme/           # AppTheme, colors, text styles
-│   ├── utils/           # Helpers, logger, storage service, validators
+│   ├── utils/           # Helpers, formatters, logger, storage service, validators
 │   └── widgets/         # Shared cross-feature UI components
 └── features/
     └── <feature_name>/
