@@ -1,6 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
-import '../services/storage_service.dart';
+import '../utils/storage_service.dart';
 
 class AuthInterceptor extends Interceptor {
   final StorageService _storageService;

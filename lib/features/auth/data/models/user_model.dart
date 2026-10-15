@@ -1,16 +1,28 @@
-import '../../domain/entities/user_entity.dart';
+import 'package:equatable/equatable.dart';
 
-class UserModel extends UserEntity {
+class UserModel extends Equatable {
+  final String id;
+  final String name;
+  final String email;
+  final String? role;
+  final String? status;
+  final String? provinceId;
+  final String? provinceName;
+  final String? avatarUrl;
+
   const UserModel({
-    required super.id,
-    required super.name,
-    required super.email,
-    super.role,
-    super.status,
-    super.provinceId,
-    super.provinceName,
-    super.avatarUrl,
+    required this.id,
+    required this.name,
+    required this.email,
+    this.role,
+    this.status,
+    this.provinceId,
+    this.provinceName,
+    this.avatarUrl,
   });
+
+  String get displayName =>
+      name.isNotEmpty ? name : (email.contains('@') ? email.split('@').first : email);
 
   factory UserModel.fromJson(Map<String, dynamic> json) {
     return UserModel(
@@ -39,16 +51,15 @@ class UserModel extends UserEntity {
     };
   }
 
-  factory UserModel.fromEntity(UserEntity entity) {
-    return UserModel(
-      id: entity.id,
-      name: entity.name,
-      email: entity.email,
-      role: entity.role,
-      status: entity.status,
-      provinceId: entity.provinceId,
-      provinceName: entity.provinceName,
-      avatarUrl: entity.avatarUrl,
-    );
-  }
+  @override
+  List<Object?> get props => [
+        id,
+        name,
+        email,
+        role,
+        status,
+        provinceId,
+        provinceName,
+        avatarUrl,
+      ];
 }

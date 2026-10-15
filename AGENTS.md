@@ -8,42 +8,36 @@
 ---
 
 ## 2. Architecture & Directory Structure
-The project follows **Feature-First Clean Architecture** with **GetX**:
+The project follows **Feature-First Modular Architecture** with **GetX**:
 
 ```
 lib/
 ├── app.dart
 ├── main.dart
 ├── core/
-│   ├── bindings/        # Global/Initial bindings
-│   ├── constants/       # App constants (colors, assets, strings)
-│   ├── errors/          # Custom exceptions & failures
-│   ├── network/         # HTTP client & interceptors
-│   ├── router/          # App routes & GetPages
-│   ├── services/        # Low-level services (Storage, Device)
-│   ├── theme/           # AppTheme, text themes
+│   ├── config/          # Environment variables, flavors, app constants
+│   ├── network/         # API client, interceptors, endpoints, exceptions
+│   ├── routes/          # Navigation routes and GetPage route definitions
+│   ├── theme/           # AppTheme, colors, text styles
+│   ├── utils/           # Helpers, logger, storage service, validators
 │   └── widgets/         # Shared cross-feature UI components
 └── features/
     └── <feature_name>/
         ├── data/
-        │   ├── datasources/   # Remote & local API calls
         │   ├── models/        # JSON serialization & schema mappers
-        │   └── repositories/  # Repository implementations
-        ├── domain/
-        │   ├── entities/      # Pure business models
-        │   ├── repositories/  # Abstract repository contracts
-        │   └── usecases/      # Single-responsibility business actions
+        │   └── repositories/  # Repository implementations & contracts
+        ├── logic/
+        │   ├── <feature>_controller.dart  # GetxController implementations
+        │   └── <feature>_binding.dart     # Feature dependency bindings
         └── presentation/
-            ├── bindings/      # Feature dependency bindings
-            ├── controllers/   # GetxController implementations
-            ├── views/         # Full-screen pages
+            ├── pages/         # Full-screen pages
             └── widgets/       # Feature-specific sub-widgets
 ```
 
 ### Dependency Rules:
-- Presentation depends on Domain (`UseCases`).
-- Data implements Domain contracts (`Repositories`).
-- Domain has zero external dependencies (no Flutter UI, no GetX, pure Dart).
+- Presentation depends on Logic (`Controllers`) and Core components.
+- Logic coordinates Data (`Repositories`) and exposes reactive state to Presentation.
+- Data handles data transformation (`Models`) and remote/local operations (`Repositories`).
 - Features must not directly import internals of another feature; communicate via shared contracts in `core` or global services.
 
 ---
@@ -53,8 +47,8 @@ lib/
 ### Widget Rendering & Build Optimization
 - **Enforce `const`**: Always use `const` constructors on widgets and subtrees to eliminate unnecessary rebuilds.
 - **Granular Reactivity**: Wrap only the exact target widget in `Obx()`. Never wrap entire pages, `Scaffold`, or large container widgets with `Obx()`.
-- **Stateless by Default**: Views must extend `GetView<TController>` or `StatelessWidget`. Avoid `StatefulWidget` unless strictly managing local ticker/animation state.
-- **No heavy computations in `build()`**: Data transformations, filtering, and sorting belong inside controllers or use cases, never in the widget build tree.
+- **Stateless by Default**: Pages must extend `GetView<TController>` or `StatelessWidget`. Avoid `StatefulWidget` unless strictly managing local ticker/animation state.
+- **No heavy computations in `build()`**: Data transformations, filtering, and sorting belong inside controllers, never in the widget build tree.
 - **Efficient Lists**: Use `ListView.builder` or `CustomScrollView` with slivers for dynamic lists. Always provide `itemCount` and avoid unconstrained shrink-wrapping where possible.
 
 ### State & Memory Management
@@ -78,19 +72,16 @@ lib/
 | Component | Suffix / Pattern | Example |
 | :--- | :--- | :--- |
 | File Names | `snake_case.dart` | `login_controller.dart` |
-| View Class | `PascalCaseView` | `LoginView` |
+| Page Class | `PascalCasePage` | `LoginPage` |
 | Controller Class | `PascalCaseController` | `LoginController` |
 | Binding Class | `PascalCaseBinding` | `AuthBinding` |
-| UseCase Class | Action Verb + `UseCase` | `GetUserProfileUseCase` |
-| Repository Interface | `PascalCaseRepository` | `AuthRepository` |
-| Repository Impl | `PascalCaseRepositoryImpl` | `AuthRepositoryImpl` |
-| Remote DataSource | `PascalCaseRemoteDataSource` | `AuthRemoteDataSource` |
+| Repository Class | `PascalCaseRepository` | `AuthRepository` |
 | Data Model | `PascalCaseModel` | `UserModel` |
-| Domain Entity | `PascalCase` | `User` |
+| Feature Widget | `PascalCase` | `StatCard` |
 
 ---
 
 ## 5. Error Handling & Asynchronous Code
 - Use `async`/`await` consistently; avoid mixing with `.then()`.
-- Handle exceptions in the Data layer, map them to typed `Failure` objects in Domain, and translate them to user-facing UI messages in Presentation.
+- Handle exceptions in the Data layer, map them to typed exceptions in `core/network/exceptions.dart`, and translate them to user-facing UI messages in Presentation.
 - Never use empty `catch` blocks.

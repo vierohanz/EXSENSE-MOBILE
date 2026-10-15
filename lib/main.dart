@@ -3,8 +3,8 @@ import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'app.dart';
-import 'core/constants/flavor_config.dart';
-import 'core/services/storage_service.dart';
+import 'core/config/flavor.dart';
+import 'core/utils/storage_service.dart';
 import 'core/utils/logger.dart';
 
 void main() async {

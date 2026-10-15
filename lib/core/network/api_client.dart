@@ -1,8 +1,8 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
-import '../constants/app_constants.dart';
-import '../errors/exceptions.dart';
-import '../services/storage_service.dart';
+import '../config/app_constants.dart';
+import '../network/exceptions.dart';
+import '../utils/storage_service.dart';
 import 'api_interceptors.dart';
 
 class ApiClient {

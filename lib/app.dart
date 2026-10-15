@@ -1,9 +1,26 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'core/bindings/initial_binding.dart';
-import 'core/constants/app_constants.dart';
-import 'core/router/app_router.dart';
+import 'core/config/app_constants.dart';
+import 'core/network/api_client.dart';
+import 'core/routes/app_pages.dart';
+import 'core/routes/app_routes.dart';
 import 'core/theme/app_theme.dart';
+import 'core/utils/storage_service.dart';
+
+class InitialBinding extends Bindings {
+  @override
+  void dependencies() {
+    Get.lazyPut<ApiClient>(
+      () => ApiClient(
+        storageService: Get.find<StorageService>(),
+        onUnauthorized: () {
+          Get.offAllNamed(Routes.login);
+        },
+      ),
+      fenix: true,
+    );
+  }
+}
 
 class ExsenseApp extends StatelessWidget {
   const ExsenseApp({super.key});

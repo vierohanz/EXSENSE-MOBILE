@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
-import '../constants/app_colors.dart';
-import '../router/app_router.dart';
-import '../widgets/app_confirmation_dialog.dart';
+import '../theme/app_colors.dart';
+import '../routes/app_pages.dart';
+import '../widgets/confirmation_dialog.dart';
+import '../widgets/input_bottom_sheet.dart';
 
 class AppHelpers {
   AppHelpers._();
@@ -220,6 +221,32 @@ class AppHelpers {
     return showDialog<bool>(
       context: context,
       builder: (ctx) => AppConfirmationDialog.logout(),
+    );
+  }
+
+  static Future<void> showInputBottomSheet({
+    required BuildContext context,
+    required String title,
+    String? subtitle,
+    required TextEditingController controller,
+    required String hintText,
+    int maxLines = 5,
+    String submitLabel = 'Submit',
+    required ValueChanged<String> onSubmit,
+  }) {
+    return showModalBottomSheet<void>(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (ctx) => AppInputBottomSheet(
+        title: title,
+        subtitle: subtitle,
+        controller: controller,
+        hintText: hintText,
+        maxLines: maxLines,
+        submitLabel: submitLabel,
+        onSubmit: onSubmit,
+      ),
     );
   }
 }
