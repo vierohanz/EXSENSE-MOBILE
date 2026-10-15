@@ -71,12 +71,12 @@ lib/
 
 | Component | Suffix / Pattern | Example |
 | :--- | :--- | :--- |
-| File Names | `snake_case.dart` | `login_controller.dart` |
-| Page Class | `PascalCasePage` | `LoginPage` |
-| Controller Class | `PascalCaseController` | `LoginController` |
-| Binding Class | `PascalCaseBinding` | `AuthBinding` |
-| Repository Class | `PascalCaseRepository` | `AuthRepository` |
-| Data Model | `PascalCaseModel` | `UserModel` |
+| File Names | `snake_case.dart` | `home_controller.dart` |
+| Page Class | `PascalCasePage` | `HomePage` |
+| Controller Class | `PascalCaseController` | `HomeController` |
+| Binding Class | `PascalCaseBinding` | `HomeBinding` |
+| Repository Class | `PascalCaseRepository` | `HomeRepository` |
+| Data Model | `PascalCaseModel` | `TimesheetEntryModel` |
 | Feature Widget | `PascalCase` | `StatCard` |
 
 ---
